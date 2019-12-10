@@ -18,6 +18,7 @@ import com.facebook.soloader.SoLoader;
 
 import java.util.Arrays;
 import java.util.List;
+import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -31,14 +32,15 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNFirebasePackage(),
-             new RNFirebaseFirestorePackage(),
-            new LinearGradientPackage(),
-            new ReactVideoPackage(),
-            new VectorIconsPackage(),
-            new RNGestureHandlerPackage(),
-            new DocumentPickerPackage(),
-            new AsyncStoragePackage()
+          new RNFirebasePackage(),
+          new RNFirebaseFirestorePackage(),
+          new RNFirebaseAuthPackage(),
+          new LinearGradientPackage(),
+          new ReactVideoPackage(),
+          new VectorIconsPackage(),
+          new RNGestureHandlerPackage(),
+          new DocumentPickerPackage(),
+          new AsyncStoragePackage()
       );
     }
 

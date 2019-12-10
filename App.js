@@ -15,7 +15,7 @@ export default class App extends Component {
   async componentDidMount() {
     const firestore = firebase.firestore()
     try {
-      await firestore.collection('users').add({ name: 'izaanjahangir' })
+      await firestore.collection('users').add({ name: 'Implemented Auth' })
       console.log('Success');
     }
     catch (e) {
