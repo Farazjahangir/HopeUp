@@ -9,6 +9,10 @@ import CustomHeader from '../Component/header'
 import CustomButton from '../Component/Button'
 // import firebase from 'react-native-firebase'
 import firebase from '../utils/firebase'
+import { loginUser } from '../redux/actions/authActions'
+import { connect } from 'react-redux'
+
+
 
 class EmailAccount extends React.Component {
   constructor(props) {
@@ -27,37 +31,44 @@ class EmailAccount extends React.Component {
   sText(key, value) {
     this.setState({ [key]: value })
   }
+  componentWillReceiveProps(props){
+    console.log('componentWillReceiveProps ====>' , props);
+    
+  }
+  componentDidMount(){
+    console.log('componentDidMount' , this.props);
+    
+  }
 
   checkValidation = () => {
     const { email, password, confirmPassword } = this.state
     if (!email || !password || !confirmPassword) {
       this.setState({ email: null, password: null, confirmPassword: null })
       alert('All Fields Are Required')
-      return false
+      return true
     }
     if (password !== confirmPassword) {
       this.setState({ password: null, confirmPassword: null })
       alert('passwords Should Match')
-      return false
+      return true
     }
-    return true
   }
 
   async signIn() {
     const { email, password } = this.state
     // console.log('State ======>', this.state);
 
-    const isValidate = this.checkValidation()
-    if (!isValidate) return
+    if (this.checkValidation()) return
 
     try{
       const response = await firebase.signUpWithEmail(email , password)
       console.log('Response' , response);
+      this.props.loginUser(response)
       
       alert('Success')
     }
     catch(e){
-      alert('Message')
+      alert(e.message)
     }
     
   }
@@ -98,4 +109,16 @@ const styles = StyleSheet.create({
   bottomLink: { fontSize: 14, fontWeight: "bold", color: "#ccc" },
   line: { flex: 1, height: 0.5, borderWidth: 0.3, borderColor: "#ccc" }
 })
-export default EmailAccount
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loginUser: (userData) => dispatch(loginUser(userData))
+  }
+}
+const mapStateToProps = (state) => {
+  return {
+    userObj: state.auth.user
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EmailAccount)
+

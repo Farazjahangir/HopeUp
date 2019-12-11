@@ -11,13 +11,16 @@ firebaseFunctions.signUpWithEmail = async (email , password) => {
         const userId = authResponse.user.uid        
         const userObj = {
             userId,
-            email
+            email,
+            followers: [],
+            following: []
         }
        await firebaseFunctions.setDocument('Users' , userId , userObj)
+       userObj.userId = userId
         return userObj
     }
     catch(e){
-        throw { message: e.message }
+        throw e
     }
 }
 

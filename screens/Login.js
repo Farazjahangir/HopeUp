@@ -46,7 +46,8 @@ class Login extends React.Component {
       const res =  await firebase.signInWithEmail(email, password)
       const uid = res.user.uid
       const dbResponse = await firebase.getDocument('Users' , uid)
-      console.log(dbResponse._data);
+      const userData = dbResponse._data
+      this.props.loginUser(userData)
     }
     catch(e){
       alert(e.message)

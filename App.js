@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, Text, View, ScrollView, StatusBar } from 'react-native';
 import Routes from './navigation'
 import { themeColor } from './Constant/index'
-import { store } from './redux/store'
+import { store, persistor } from './redux/store'
 import { Provider } from 'react-redux'
 import firebase from 'react-native-firebase'
+import { PersistGate } from 'redux-persist/integration/react'
 
 export default class App extends Component {
   constructor(props) {
@@ -30,7 +31,9 @@ export default class App extends Component {
     console.log(store)
     return (
       <Provider store={store}>
-        <Routes />
+        <PersistGate loading={null} persistor={persistor}>
+          <Routes />
+        </PersistGate>
       </Provider>
     );
   }
