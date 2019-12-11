@@ -7,10 +7,15 @@ import {
 import { Icon, Input, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { loginUser } from '../redux/actions/authActions'
+import firebase from '../utils/firebase'
 
 class Login extends React.Component {
   constructor(props) {
     super(props)
+    this.state = {
+      email: null,
+      password: null
+    }
   }
   static navigationOptions = {
     header: null,
@@ -24,8 +29,33 @@ class Login extends React.Component {
     console.log('componentDidMount' , this.props);
     
   }
+  checkValidation(){
+    const { email, password } = this.state
+    if(!email || !password){
+      this.setState({  password: null })
+      alert('All fields are required')
+      return true
+    }
+  }
+
+  async login(){
+    const { email, password } = this.state
+
+    if(this.checkValidation()) return
+    try{
+      const res =  await firebase.signInWithEmail(email, password)
+      const uid = res.user.uid
+      const dbResponse = await firebase.getDocument('Users' , uid)
+      console.log(dbResponse._data);
+    }
+    catch(e){
+      alert(e.message)
+    }
+    
+  }
   render() {
     const { navigation } = this.props
+    const { email, password } = this.state
     return (
       <ScrollView style={{ backgroundColor: '#323643' }}>
         <View style={{
@@ -38,15 +68,15 @@ class Login extends React.Component {
         </View>
         <View style={{ flex: 1, alignItems: 'center', marginTop: "32%" }}>
           <Input placeholder={'Email'} placeholderTextColor={'#fff'}
-            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} />
+            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(email)=> this.setState({ email: email })} value={email} />
 
           <Input placeholder={'Password'} secureTextEntry={true} placeholderTextColor={'#fff'}
-            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} />
+            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(password)=> this.setState({ password: password })} value={password} />
 
           <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 12 }}>
             <Button
               //  onPress = {()=> this.props.navigation.navigate('App')} 
-              onPress={()=> this.props.loginUser({name: 'faraz'})}
+              onPress={()=> this.login()}
               title={'Login'} buttonStyle={styles.buttonStyle} />
             <Button title={'Sign Up'} buttonStyle={[styles.buttonStyle, { backgroundColor: "#FD7496", borderWidth: 0 }]} />
           </View>

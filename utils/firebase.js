@@ -21,8 +21,32 @@ firebaseFunctions.signUpWithEmail = async (email , password) => {
     }
 }
 
+firebaseFunctions.signInWithEmail = async (email , password) => {
+    try{
+        const authResponse = await auth.signInWithEmailAndPassword(email, password)
+        return authResponse
+    }
+    catch(e){
+        throw {message : e.message}
+    }
+}
+
 firebaseFunctions.setDocument = (collection, docId, data) => {
     return db.collection(collection).doc(docId).set(data)
+}
+
+firebaseFunctions.getDocument = async (collection, docId ) => {
+    console.log('firebaseFunctions.getDocument' , docId);
+    try{
+        console.log("try")
+        const dbResponse = await db.collection(collection).doc(docId).get()
+        return dbResponse
+    }
+    catch(e){
+        console.log('Error' , e);
+        
+        throw e
+    }
 }
 
 export default firebaseFunctions
