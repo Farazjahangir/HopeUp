@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 import { Icon, Input, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
+
 import { loginUser } from '../redux/actions/authActions'
 import firebase from '../utils/firebase'
 
@@ -48,6 +49,7 @@ class Login extends React.Component {
       const dbResponse = await firebase.getDocument('Users' , uid)
       const userData = dbResponse._data
       this.props.loginUser(userData)
+      this.props.navigation.navigate('App')
     }
     catch(e){
       alert(e.message)
@@ -76,7 +78,6 @@ class Login extends React.Component {
 
           <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 12 }}>
             <Button
-              //  onPress = {()=> this.props.navigation.navigate('App')} 
               onPress={()=> this.login()}
               title={'Login'} buttonStyle={styles.buttonStyle} />
             <Button title={'Sign Up'} buttonStyle={[styles.buttonStyle, { backgroundColor: "#FD7496", borderWidth: 0 }]} />

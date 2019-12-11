@@ -5,12 +5,12 @@ import {
   Text, ScrollView
 } from 'react-native';
 import { Icon, Input, Button } from 'react-native-elements'
+import { connect } from 'react-redux'
+
 import CustomHeader from '../Component/header'
 import CustomButton from '../Component/Button'
-// import firebase from 'react-native-firebase'
 import firebase from '../utils/firebase'
 import { loginUser } from '../redux/actions/authActions'
-import { connect } from 'react-redux'
 
 
 
@@ -54,8 +54,9 @@ class EmailAccount extends React.Component {
     }
   }
 
-  async signIn() {
+  async signUp() {
     const { email, password } = this.state
+    const { navigation } = this.props
     // console.log('State ======>', this.state);
 
     if (this.checkValidation()) return
@@ -64,6 +65,7 @@ class EmailAccount extends React.Component {
       const response = await firebase.signUpWithEmail(email , password)
       console.log('Response' , response);
       this.props.loginUser(response)
+      this.props.navigation.navigate('App')
       
       alert('Success')
     }
@@ -86,7 +88,7 @@ class EmailAccount extends React.Component {
           <Input placeholder={'Confirm Password'} secureTextEntry={true} placeholderTextColor={'#fff'}
             inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(confirmPassword) => this.sText('confirmPassword', confirmPassword)} value={confirmPassword} />
           <View style={{ marginVertical: 12, width: "100%" }}>
-            <CustomButton title={'Sign Up'} containerStyle={{ width: "90%" }} buttonStyle={{ borderColor: '#ccc', borderWidth: 1, }} onPress={() => this.signIn()} />
+            <CustomButton title={'Sign Up'} containerStyle={{ width: "90%" }} buttonStyle={{ borderColor: '#ccc', borderWidth: 1, }} onPress={() => this.signUp()} />
           </View>
         </View>
       </View>

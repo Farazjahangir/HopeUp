@@ -13,20 +13,6 @@ export default class App extends Component {
     console.disableYellowBox = true;
   }
 
-  // async componentDidMount() {
-  //   const firestore = firebase.firestore()
-  //   try {
-  //     await firestore.collection('users').add({ name: 'Implemented Auth' })
-  //     console.log('Success');
-  //   }
-  //   catch (e) {
-  //     console.log('Error ====>', e.message);
-
-  //   }
-  // }
-
-
-
   render() {
     console.log(store)
     return (
