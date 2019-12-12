@@ -38,6 +38,16 @@ firebaseFunctions.setDocument = (collection, docId, data) => {
     return db.collection(collection).doc(docId).set(data)
 }
 
+firebaseFunctions.addDocument = async (collection, data) => {
+    try{
+        const response = await db.collection(collection).add(data)
+        return response
+    }
+    catch(e){
+        return e
+    }
+}
+
 firebaseFunctions.getDocument = async (collection, docId ) => {
     console.log('firebaseFunctions.getDocument' , docId);
     try{
