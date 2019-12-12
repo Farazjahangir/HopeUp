@@ -49,7 +49,6 @@ firebaseFunctions.addDocument = async (collection, data) => {
 }
 
 firebaseFunctions.getDocument = async (collection, docId ) => {
-    console.log('firebaseFunctions.getDocument' , docId);
     try{
         console.log("try")
         const dbResponse = await db.collection(collection).doc(docId).get()
@@ -61,5 +60,4 @@ firebaseFunctions.getDocument = async (collection, docId ) => {
         throw e
     }
 }
-
 export default firebaseFunctions
