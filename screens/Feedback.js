@@ -141,7 +141,7 @@ class Feedback extends React.Component {
           }}
         >
           <CustomButton
-            onPress={() => this.setState({ comments: true })}
+            // onPress={() => this.setState({ comments: true })}
             buttonStyle={styles.commentButton}
             title={'Comments'}
             backgroundColor={comments ? pinkColor : themeColor}
