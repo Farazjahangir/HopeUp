@@ -16,14 +16,20 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.facebook.CallbackManager;
 
 import java.util.Arrays;
 import java.util.List;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
 
 public class MainApplication extends Application implements ReactApplication {
+   private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
 
+  protected static CallbackManager getCallbackManager() {
+    return mCallbackManager;
+  }
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+    
     @Override
     public boolean getUseDeveloperSupport() {
       return BuildConfig.DEBUG;
@@ -33,7 +39,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new FBSDKPackage(),
+          new FBSDKPackage(mCallbackManager),
           new RNFirebasePackage(),
           new RNFirebaseFirestorePackage(),
           new RNFirebaseAuthPackage(),
