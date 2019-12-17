@@ -6,9 +6,11 @@ import {
 } from 'react-native';
 import { Icon, Input, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
 
 import { loginUser } from '../redux/actions/authActions'
 import firebase from '../utils/firebase'
+import Firebase from 'react-native-firebase'
 
 class Login extends React.Component {
   constructor(props) {
@@ -22,39 +24,72 @@ class Login extends React.Component {
     header: null,
   };
 
-  componentWillReceiveProps(props){
-    console.log('componentWillReceiveProps ====>' , props);
-    
+  componentWillReceiveProps(props) {
+    console.log('componentWillReceiveProps ====>', props);
+
   }
-  componentDidMount(){
-    console.log('componentDidMount' , this.props);
-    
+  componentDidMount() {
+    console.log('componentDidMount', this.props);
+
   }
-  checkValidation(){
+  checkValidation() {
     const { email, password } = this.state
-    if(!email || !password){
-      this.setState({  password: null })
+    if (!email || !password) {
+      this.setState({ password: null })
       alert('All fields are required')
       return true
     }
   }
 
-  async login(){
+  async login() {
     const { email, password } = this.state
 
-    if(this.checkValidation()) return
-    try{
-      const res =  await firebase.signInWithEmail(email, password)
+    if (this.checkValidation()) return
+    try {
+      const res = await firebase.signInWithEmail(email, password)
       const uid = res.user.uid
-      const dbResponse = await firebase.getDocument('Users' , uid)
+      const dbResponse = await firebase.getDocument('Users', uid)
       const userData = dbResponse._data
       this.props.loginUser(userData)
       this.props.navigation.navigate('App')
     }
-    catch(e){
+    catch (e) {
       alert(e.message)
     }
-    
+
+  }  
+  async facebookLogin() {
+    console.log('facebookLogin()');
+    try{
+      console.log('IFffff ==>'); 
+      const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
+      if (result.isCancelled) {
+        
+        // handle this however suites the flow of your app
+        throw new Error('User cancelled request'); 
+      }
+      console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
+      const data = await AccessToken.getCurrentAccessToken();
+      if (!data) {
+        // handle this however suites the flow of your app
+        throw new Error('Something went wrong obtaining the users access token');
+      }
+      const credential = Firebase.auth.FacebookAuthProvider.credential(data.accessToken);
+      const firebaseUserCredential = await Firebase.auth().signInWithCredential(credential);
+      console.log(firebaseUserCredential.user.toJSON())
+      const userObj = {
+        userName: firebaseUserCredential.user.displayName,
+        email: firebaseUserCredential.user.email,
+        photoUrl: firebaseUserCredential.user.photoURL 
+      }
+      console.log('USerObj ======>' , userObj);
+      this.props.loginUser(userObj)
+      this.props.navigation.navigate('App')
+    }
+    catch(e){
+      console.log('Facebook Error =====>' , e.message);
+      
+    }
   }
   render() {
     const { navigation } = this.props
@@ -71,14 +106,14 @@ class Login extends React.Component {
         </View>
         <View style={{ flex: 1, alignItems: 'center', marginTop: "32%" }}>
           <Input placeholder={'Email'} placeholderTextColor={'#fff'}
-            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(email)=> this.setState({ email: email })} value={email} />
+            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(email) => this.setState({ email: email })} value={email} />
 
           <Input placeholder={'Password'} secureTextEntry={true} placeholderTextColor={'#fff'}
-            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(password)=> this.setState({ password: password })} value={password} />
+            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(password) => this.setState({ password: password })} value={password} />
 
           <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 12 }}>
             <Button
-              onPress={()=> this.login()}
+              onPress={() => this.login()}
               title={'Login'} buttonStyle={styles.buttonStyle} />
             <Button title={'Sign Up'} buttonStyle={[styles.buttonStyle, { backgroundColor: "#FD7496", borderWidth: 0 }]} />
           </View>
@@ -92,7 +127,7 @@ class Login extends React.Component {
             <View style={styles.line} />
           </View>
           <Button title={'Facebook'}
-            buttonStyle={{ width: 300, height: 50, borderRadius: 25 }} />
+            buttonStyle={{ width: 300, height: 50, borderRadius: 25 }} onPress={() => this.facebookLogin()} />
         </View>
         <View style={{ paddingLeft: 12 }}>
           <TouchableOpacity onPress={() => this.props.navigation.navigate("CreateAccount")} style={{ height: 30, justifyContent: "center" }}>
@@ -130,8 +165,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 const mapStateToProps = (state) => {
-  console.log('mapStateToProps====> ',state);
-  
+  console.log('mapStateToProps====> ', state);
+
   return {
     userObj: state.auth.user
   }

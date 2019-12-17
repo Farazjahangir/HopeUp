@@ -56,9 +56,9 @@ class LandingScreen extends React.Component {
   static navigationOptions = {
     header: null
   }
-  // componentDidMount() {
-  //   if (this.props.userObj) this.props.navigation.navigate('App')
-  // }
+  componentDidMount() {
+    if (this.props.userObj) this.props.navigation.navigate('App')
+  }
   _renderItem({ item, index }, parallaxProps) {
     return (
       <View style={styles.item}>
