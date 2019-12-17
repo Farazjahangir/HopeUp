@@ -5,11 +5,12 @@ const firebaseFunctions = {};
 const auth = firebaseLib.auth()
 const db = firebaseLib.firestore()
 
-firebaseFunctions.signUpWithEmail = async (email , password) => {
+firebaseFunctions.signUpWithEmail = async (email , password , userName) => {
     try{
         const authResponse = await auth.createUserWithEmailAndPassword(email, password)
         const userId = authResponse.user.uid        
         const userObj = {
+            userName,
             userId,
             email,
             followers: [],

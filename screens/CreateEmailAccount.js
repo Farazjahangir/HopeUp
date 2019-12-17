@@ -31,13 +31,13 @@ class EmailAccount extends React.Component {
   sText(key, value) {
     this.setState({ [key]: value })
   }
-  componentWillReceiveProps(props){
-    console.log('componentWillReceiveProps ====>' , props);
-    
+  componentWillReceiveProps(props) {
+    console.log('componentWillReceiveProps ====>', props);
+
   }
-  componentDidMount(){
-    console.log('componentDidMount' , this.props);
-    
+  componentDidMount() {
+    console.log('componentDidMount', this.props);
+
   }
 
   checkValidation = () => {
@@ -55,32 +55,34 @@ class EmailAccount extends React.Component {
   }
 
   async signUp() {
-    const { email, password } = this.state
+    const { userName , email, password } = this.state
     const { navigation } = this.props
     // console.log('State ======>', this.state);
 
     if (this.checkValidation()) return
 
-    try{
-      const response = await firebase.signUpWithEmail(email , password)
-      console.log('Response' , response);
+    try {
+      const response = await firebase.signUpWithEmail(email, password , userName)
+      console.log('Response', response);
       this.props.loginUser(response)
       this.props.navigation.navigate('App')
-      
+
       alert('Success')
     }
-    catch(e){
+    catch (e) {
       alert(e.message)
     }
-    
+
   }
   render() {
     const { navigation } = this.props
-    const { email, password, confirmPassword } = this.state
+    const { userName , email, password, confirmPassword } = this.state
     return (
       <View style={{ backgroundColor: '#323643', flex: 1 }}>
         <CustomHeader navigation={navigation} title={'Sign Up'} />
         <View style={{ flex: 1, alignItems: 'center', justifyContent: "flex-end" }}>
+          <Input placeholder={'Username'} placeholderTextColor={'#fff'}
+            inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(userName) => this.sText('userName', userName)} value={userName} />
           <Input placeholder={'Email'} placeholderTextColor={'#fff'}
             inputContainerStyle={styles.inputContainer} inputStyle={{ fontWeight: 'bold' }} onChangeText={(email) => this.sText('email', email)} value={email} />
           <Input placeholder={'Password'} secureTextEntry={true} placeholderTextColor={'#fff'}

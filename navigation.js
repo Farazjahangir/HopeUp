@@ -75,7 +75,7 @@ const AuthStack = createStackNavigator({
     }
   }
 }, 
-{initialRouteName : 'SignIn'}
+{initialRouteName : 'EmailAccount'}
 )
 
 const AppStack = createStackNavigator({
