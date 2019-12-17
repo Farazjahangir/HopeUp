@@ -60,4 +60,5 @@ firebaseFunctions.getDocument = async (collection, docId ) => {
         throw e
     }
 }
+
 export default firebaseFunctions

@@ -10,7 +10,7 @@ import { AccessToken, LoginManager } from 'react-native-fbsdk';
 
 import { loginUser } from '../redux/actions/authActions'
 import firebase from '../utils/firebase'
-import Firebase from 'react-native-firebase'
+import FirebaseLib from 'react-native-firebase'
 
 class Login extends React.Component {
   constructor(props) {
@@ -59,36 +59,40 @@ class Login extends React.Component {
 
   }  
   async facebookLogin() {
-    console.log('facebookLogin()');
     try{
-      console.log('IFffff ==>'); 
       const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
       if (result.isCancelled) {
-        
-        // handle this however suites the flow of your app
         throw new Error('User cancelled request'); 
       }
-      console.log(`Login success with permissions: ${result.grantedPermissions.toString()}`);
       const data = await AccessToken.getCurrentAccessToken();
       if (!data) {
-        // handle this however suites the flow of your app
         throw new Error('Something went wrong obtaining the users access token');
       }
-      const credential = Firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-      const firebaseUserCredential = await Firebase.auth().signInWithCredential(credential);
-      console.log(firebaseUserCredential.user.toJSON())
-      const userObj = {
-        userName: firebaseUserCredential.user.displayName,
-        email: firebaseUserCredential.user.email,
-        photoUrl: firebaseUserCredential.user.photoURL 
+      const credential = FirebaseLib.auth.FacebookAuthProvider.credential(data.accessToken);
+      const firebaseUserCredential = await FirebaseLib.auth().signInWithCredential(credential);
+      const fbUid = firebaseUserCredential.user.uid
+
+      const response = await firebase.getDocument('Users' , fbUid)
+      let userObj = {}
+      if(response.exists){
+       userObj =  response.data();        
       }
-      console.log('USerObj ======>' , userObj);
-      this.props.loginUser(userObj)
+      else{
+       userObj = {
+          userName: firebaseUserCredential.user.displayName,
+          email: firebaseUserCredential.user.email,
+          photoUrl: firebaseUserCredential.user.photoURL,
+          fbUid,
+          followers: [],
+          following: []
+        }
+        await firebase.setDocument('Users', fbUid , userObj)
+      }
+      this.props.loginUser(userObj) 
       this.props.navigation.navigate('App')
     }
     catch(e){
-      console.log('Facebook Error =====>' , e.message);
-      
+      alert(e.message);  
     }
   }
   render() {
