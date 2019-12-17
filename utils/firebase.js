@@ -62,4 +62,16 @@ firebaseFunctions.getDocument = async (collection, docId ) => {
     }
 }
 
+firebaseFunctions.getCollection = async collection => {
+    try{
+        const usersArr = []
+        const querySnapshot = await db.collection(collection).get()
+        querySnapshot.forEach(doc => usersArr.push(doc.data()))
+        return usersArr
+    }
+    catch(e){
+        alert(e.message)
+    }
+}
+
 export default firebaseFunctions
