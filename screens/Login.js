@@ -49,7 +49,11 @@ class Login extends React.Component {
       const res = await firebase.signInWithEmail(email, password)
       const uid = res.user.uid
       const dbResponse = await firebase.getDocument('Users', uid)
+      console.log('dbResponse =====>' , dbResponse);
+      
       const userData = dbResponse._data
+      console.log('USerData ====>' , userData);
+      
       this.props.loginUser(userData)
       this.props.navigation.navigate('App')
     }

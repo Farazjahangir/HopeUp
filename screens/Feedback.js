@@ -33,6 +33,8 @@ class Feedback extends React.Component {
     header: null
   }
   async componentDidMount() {
+    console.log('PRops' , this.props.userObj);
+    
     const users = await firebase.getCollection('Users')
     this.setState({ users })
   }
@@ -120,7 +122,7 @@ class Feedback extends React.Component {
   </View>
 
   startChat(otherUserId) {
-    this.props.navigation.navigate('Messages' , {otherUserId})
+    this.props.navigation.navigate('Chat' , {otherUserId})
     
   }
 
