@@ -13,23 +13,40 @@ import { Icon, SearchBar } from 'react-native-elements';
 import { themeColor, pinkColor } from '../Constant/index';
 import DocumentPicker from 'react-native-document-picker';
 import { connect } from 'react-redux'
-
+import firebase from '../utils/firebase'
 
 class Messages extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      image: ''
+      image: '',
+      otherUsersArr: []
     }
   }
   static navigationOptions = {
     header: null,
-  };  
+  };
+
+  async componentDidMount() {
+    const { userId } = this.props.userObj
+    const otherUsersArr = []
+    const idsArray = await firebase.getDocumentByQuery('Rooms', 'userObj.' + userId, '==', true)
+    // console.log(idsArray)
+    for (var i = 0; i < idsArray.length; i++) {
+      if (idsArray[i] !== userId) {
+        const otherUsers = await firebase.getDocument('Users', idsArray[i])
+        otherUsersArr.push(otherUsers.data())
+      }
+    }
+    this.setState({ otherUsersArr })
+  }
+
 
   messageList = (item) => <TouchableOpacity
-    onPress={() => this.props.navigation.navigate("Chat")}
+    onPress={() => this.props.navigation.navigate("Chat" , {otherUserId : item.userId})}
     style={styles.messageContainer}>
     <View>
+      {console.log('Item ==>' , item)}
       <Image source={require('../assets/avatar.png')}
         style={styles.msgImage} />
       <View style={[styles.iconContainer, { backgroundColor: pinkColor }]}>
@@ -38,15 +55,18 @@ class Messages extends React.Component {
     </View>
     <View style={{ flex: 1 }}>
       <View style={styles.msgName}>
-        <Text style={styles.name}>User Name</Text>
+      <Text style={styles.name}>{item.userName}</Text>
       </View>
-      <Text style={{ paddingLeft: 5, color: '#ccc' }}>dashkhdskja dashkhdskjadashkhdskjadashkhdskja dashkhdskja</Text>
+      {/* <Text style={{ paddingLeft: 5, color: '#ccc' }}>dashkhdskja dashkhdskjadashkhdskjadashkhdskja dashkhdskja</Text> */}
     </View>
   </TouchableOpacity>
 
 
   render() {
     const { navigation } = this.props.navigation
+    const { otherUsersArr } = this.state
+    console.log('otherUsersArr' , otherUsersArr);
+    
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={themeColor} translucent />
@@ -88,10 +108,13 @@ class Messages extends React.Component {
             />
           </View>
         </View>
-        <FlatList
-          data={['1', '2', '3', '4', '5', '6']}
-          renderItem={({ item, index }) => this.messageList(item)}
-        />
+        {!!otherUsersArr.length
+          &&
+          <FlatList
+            data={otherUsersArr}
+            renderItem={({ item, index }) => this.messageList(item)}
+          />
+        }
       </View>
     );
   }

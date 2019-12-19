@@ -74,4 +74,24 @@ firebaseFunctions.getCollection = async collection => {
     }
 }
 
+firebaseFunctions.getDocumentByQuery = async (collection, find , operator , findBy) => {
+    try{
+        const userIds = []
+        const response =  await db.collection(collection).where(find , operator, findBy).get()
+        response.forEach(doc => {
+            idsObj = doc.data().userObj
+            const keysArr = Object.keys(idsObj)
+            for(var i =0; i < keysArr.length; i++){
+                if(userIds.indexOf(keysArr[i]) === -1 && keysArr[i] !== 'createdAt'){
+                    userIds.push(keysArr[i])
+                }
+            }
+        })
+        return userIds
+    }
+    catch(e){
+        return e.message
+    }
+}
+
 export default firebaseFunctions
