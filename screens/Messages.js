@@ -14,6 +14,7 @@ import { themeColor, pinkColor } from '../Constant/index';
 import DocumentPicker from 'react-native-document-picker';
 import { connect } from 'react-redux'
 import firebase from '../utils/firebase'
+import FirebaseLib from 'react-native-firebase'
 
 class Messages extends React.Component {
   constructor(props) {
@@ -30,12 +31,29 @@ class Messages extends React.Component {
   async componentDidMount() {
     const { userId } = this.props.userObj
     const otherUsersArr = []
+    const db = FirebaseLib.firestore()
     const idsArray = await firebase.getDocumentByQuery('Rooms', 'userObj.' + userId, '==', true)
     // console.log(idsArray)
     for (var i = 0; i < idsArray.length; i++) {
       if (idsArray[i] !== userId) {
         const otherUsers = await firebase.getDocument('Users', idsArray[i])
-        otherUsersArr.push(otherUsers.data())
+        const response = await db.collection('Rooms')
+          .where('userObj.' + userId, '==', true)
+          .where('userObj.' + idsArray[i], '==', true)
+          .get()
+        response.forEach(async value => {
+          console.log('value.id', value.id);
+
+          const doc = await db.collection('Rooms').doc(value.id).collection('Messages').orderBy('createdAt').get()
+          console.log('Dcouemt ======>', doc);
+          const lastIndex = doc.docs.length - 1
+          const message = doc.docs[lastIndex].data().message
+          console.log('MEssages', message);
+          otherUsers.data().lastMessage = message
+          console.log('  otherUsers.data()', otherUsers.data());
+          otherUsersArr.push(otherUsers.data())
+        })
+
       }
     }
     this.setState({ otherUsersArr })
@@ -43,10 +61,10 @@ class Messages extends React.Component {
 
 
   messageList = (item) => <TouchableOpacity
-    onPress={() => this.props.navigation.navigate("Chat" , {otherUserId : item.userId})}
+    onPress={() => this.props.navigation.navigate("Chat", { otherUserId: item.userId })}
     style={styles.messageContainer}>
     <View>
-      {console.log('Item ==>' , item)}
+      {console.log('Item ==>', item)}
       <Image source={require('../assets/avatar.png')}
         style={styles.msgImage} />
       <View style={[styles.iconContainer, { backgroundColor: pinkColor }]}>
@@ -55,9 +73,9 @@ class Messages extends React.Component {
     </View>
     <View style={{ flex: 1 }}>
       <View style={styles.msgName}>
-      <Text style={styles.name}>{item.userName}</Text>
+        <Text style={styles.name}>{item.userName}</Text>
       </View>
-      {/* <Text style={{ paddingLeft: 5, color: '#ccc' }}>dashkhdskja dashkhdskjadashkhdskjadashkhdskja dashkhdskja</Text> */}
+      <Text style={{ paddingLeft: 5, color: '#ccc' }}>{item.lastMessage}</Text>
     </View>
   </TouchableOpacity>
 
@@ -65,8 +83,8 @@ class Messages extends React.Component {
   render() {
     const { navigation } = this.props.navigation
     const { otherUsersArr } = this.state
-    console.log('otherUsersArr' , otherUsersArr);
-    
+    console.log('otherUsersArr', otherUsersArr);
+
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor={themeColor} translucent />
