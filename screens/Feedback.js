@@ -33,8 +33,6 @@ class Feedback extends React.Component {
     header: null
   }
   async componentDidMount() {
-    console.log('PRops' , this.props.userObj);
-    
     const users = await firebase.getCollection('Users')
     this.setState({ users })
   }

@@ -24,14 +24,6 @@ class Login extends React.Component {
     header: null,
   };
 
-  componentWillReceiveProps(props) {
-    console.log('componentWillReceiveProps ====>', props);
-
-  }
-  componentDidMount() {
-    console.log('componentDidMount', this.props);
-
-  }
   checkValidation() {
     const { email, password } = this.state
     if (!email || !password) {
@@ -49,11 +41,7 @@ class Login extends React.Component {
       const res = await firebase.signInWithEmail(email, password)
       const uid = res.user.uid
       const dbResponse = await firebase.getDocument('Users', uid)
-      console.log('dbResponse =====>' , dbResponse);
-      
       const userData = dbResponse._data
-      console.log('USerData ====>' , userData);
-      
       this.props.loginUser(userData)
       this.props.navigation.navigate('App')
     }
@@ -173,8 +161,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 const mapStateToProps = (state) => {
-  console.log('mapStateToProps====> ', state);
-
   return {
     userObj: state.auth.user
   }

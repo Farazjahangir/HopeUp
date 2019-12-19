@@ -31,15 +31,6 @@ class EmailAccount extends React.Component {
   sText(key, value) {
     this.setState({ [key]: value })
   }
-  componentWillReceiveProps(props) {
-    console.log('componentWillReceiveProps ====>', props);
-
-  }
-  componentDidMount() {
-    console.log('componentDidMount', this.props);
-
-  }
-
   checkValidation = () => {
     const { email, password, confirmPassword } = this.state
     if (!email || !password || !confirmPassword) {
@@ -57,13 +48,11 @@ class EmailAccount extends React.Component {
   async signUp() {
     const { userName , email, password } = this.state
     const { navigation } = this.props
-    // console.log('State ======>', this.state);
 
     if (this.checkValidation()) return
 
     try {
       const response = await firebase.signUpWithEmail(email, password , userName)
-      console.log('Response', response);
       this.props.loginUser(response)
       this.props.navigation.navigate('App')
 

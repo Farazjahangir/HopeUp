@@ -88,15 +88,11 @@ class Chat extends React.Component {
     const { navigation } = this.props.navigation
     const { message, messageList } = this.state
     const { userId } = this.props.userObj
-
-    console.log('MSGLIOST' , messageList);
-    
     return (
       <View style={{ flex: 1, backgroundColor: themeColor }}>
         <CustomHeader title={'Messages'}
           navigation={this.props.navigation}
           navigation={this.props.navigation} />
-          {console.log('messageList' , !!messageList.length)}
         <ScrollView>
           {messageList.length !== 0 && <FlatList
             data={messageList}
@@ -108,7 +104,6 @@ class Chat extends React.Component {
                 alignSelf: item.senderId === userId ? "flex-end" : "flex-start", marginHorizontal: 6,
                 backgroundColor:  item.senderId === userId  ? '#E2E6EC' : "#FE8369",
               }}>
-                {console.log('Data ====>' , item)}
                 <View style={{ minHeight: 60, alignItems: "center", flex: 1, }}>
                   <Text style={[{
                     padding: 12, paddingVertical: 18,

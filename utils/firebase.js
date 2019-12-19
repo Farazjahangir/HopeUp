@@ -51,13 +51,10 @@ firebaseFunctions.addDocument = async (collection, data) => {
 
 firebaseFunctions.getDocument = async (collection, docId ) => {
     try{
-        console.log("try")
         const dbResponse = await db.collection(collection).doc(docId).get()
         return dbResponse
     }
-    catch(e){
-        console.log('Error' , e);
-        
+    catch(e){        
         throw e
     }
 }

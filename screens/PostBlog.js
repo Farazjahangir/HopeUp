@@ -33,7 +33,6 @@ class PostBlog extends React.Component {
     }
     try{
       const response = await firebase.addDocument('Blog' , blogData)
-      console.log('Blog Success =====>' , response);
     }
     catch(e){
       alert(e.message)

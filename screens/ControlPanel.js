@@ -89,8 +89,6 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 const mapStateToProps = (state) => {
-  console.log('mapStateToProps====> ', state);
-
   return {
     userObj: state.auth.user
   }

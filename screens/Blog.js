@@ -36,8 +36,6 @@ class Blog extends React.Component {
       snapShot.docChanges.forEach((change) => {
         if (change.type === "added") {
           const { blogs } = this.state
-          console.log('Added ==========>' , change.doc.data());
-          
           blogs.unshift({id: change.doc.id, ...change.doc.data()})
           this.setState({ blogs: [...blogs], isBlogs: true })
 

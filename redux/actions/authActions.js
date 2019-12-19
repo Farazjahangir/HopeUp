@@ -1,6 +1,4 @@
 const loginUser = (user) =>{
-    console.log('Acion' , user);
-    
     return { 
         type : "LOGIN_USER",
         user
@@ -8,8 +6,6 @@ const loginUser = (user) =>{
 } 
 
 const logoutUser = (user) =>{
-    console.log('Acion' , user);
-    
     return { 
         type : "LOGOUT_USER",
         user

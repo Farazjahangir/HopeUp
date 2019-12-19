@@ -14,7 +14,6 @@ export default class App extends Component {
   }
 
   render() {
-    console.log(store)
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

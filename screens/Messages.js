@@ -33,7 +33,6 @@ class Messages extends React.Component {
     const otherUsersArr = []
     const db = FirebaseLib.firestore()
     const idsArray = await firebase.getDocumentByQuery('Rooms', 'userObj.' + userId, '==', true)
-    // console.log(idsArray)
     for (var i = 0; i < idsArray.length; i++) {
       if (idsArray[i] !== userId) {
         const otherUsers = await firebase.getDocument('Users', idsArray[i])
@@ -42,15 +41,10 @@ class Messages extends React.Component {
           .where('userObj.' + idsArray[i], '==', true)
           .get()
         response.forEach(async value => {
-          console.log('value.id', value.id);
-
           const doc = await db.collection('Rooms').doc(value.id).collection('Messages').orderBy('createdAt').get()
-          console.log('Dcouemt ======>', doc);
           const lastIndex = doc.docs.length - 1
           const message = doc.docs[lastIndex].data().message
-          console.log('MEssages', message);
           otherUsers.data().lastMessage = message
-          console.log('  otherUsers.data()', otherUsers.data());
           otherUsersArr.push(otherUsers.data())
         })
 
@@ -64,7 +58,6 @@ class Messages extends React.Component {
     onPress={() => this.props.navigation.navigate("Chat", { otherUserId: item.userId })}
     style={styles.messageContainer}>
     <View>
-      {console.log('Item ==>', item)}
       <Image source={require('../assets/avatar.png')}
         style={styles.msgImage} />
       <View style={[styles.iconContainer, { backgroundColor: pinkColor }]}>
@@ -83,7 +76,6 @@ class Messages extends React.Component {
   render() {
     const { navigation } = this.props.navigation
     const { otherUsersArr } = this.state
-    console.log('otherUsersArr', otherUsersArr);
 
     return (
       <View style={styles.container}>
