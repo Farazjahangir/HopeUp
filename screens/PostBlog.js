@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import {
   StyleSheet,
   View, TouchableOpacity,
-  Text, ScrollView
+  Text, ScrollView, BackHandler
 } from 'react-native';
 import { Icon, Input, Button } from 'react-native-elements'
 import { connect } from 'react-redux'
@@ -22,6 +22,24 @@ class PostBlog extends React.Component {
   static navigationOptions = {
     header: null,
   };
+  
+  async componentDidMount() {
+    const { userObj } = this.props
+    BackHandler.addEventListener('hardwareBackPress', this.savingDraft);
+    
+    const response = await firebase.getDocument('Drafts' , userObj.userId)
+   if(response.data()){
+      const blog = response.data().blog
+      const blogTitle = response.data().blogTitle
+      this.setState({ blog, blogTitle })
+   }
+    
+  }
+  componentWillUnmount(){
+    console.log('componentWillUnmount');
+    
+    BackHandler.removeEventListener('hardwareBackPress', this.savingDraft);
+  }
 
   async publishBlog() {
     const { blogTitle, blog } = this.state
@@ -29,18 +47,45 @@ class PostBlog extends React.Component {
     const blogData = {
       blogTitle,
       blog,
-      userId : userObj.userId
+      userId: userObj.userId
     }
-    try{
-      const response = await firebase.addDocument('Blog' , blogData)
+    try {
+      const response = await firebase.addDocument('Blog', blogData)
+      alert('Published')
+      this.setState({ blog: '' , blogTitle: '' })
+      await firebase.deleteDoc('Drafts' , userObj.userId)
+      this.props.navigation.goBack()
     }
-    catch(e){
+    catch (e) {
       alert(e.message)
     }
   }
+
+  savingDraft = async () => {
+    const { blogTitle, blog } = this.state
+    const { userObj } = this.props
+    if (!blogTitle && !blog){
+      return this.props.navigation.goBack()
+    }
+    
+    const blogData = {
+      blogTitle,
+      blog,
+      userId: userObj.userId
+    }
+
+    const response = await firebase.setDocument('Drafts', userObj.userId, blogData)
+    alert('Saved To Draft')
+    this.props.navigation.goBack()
+  }
+  back(){
+    this.savingDraft()
+  }
+
   render() {
     const { navigation } = this.props
     const { blogTitle, blog } = this.state
+    
     return (
       <ScrollView style={styles.container}>
         <View style={{
@@ -56,7 +101,7 @@ class PostBlog extends React.Component {
           flexDirection: 'row', justifyContent: 'space-between',
           marginHorizontal: 12, marginVertical: 12
         }}>
-          <CustomButton title={'Close'} buttonStyle={{ borderColor: '#ccc', borderWidth: 1 }} />
+          <CustomButton title={'Close'} buttonStyle={{ borderColor: '#ccc', borderWidth: 1 }} onPress={() => this.back()} />
           <CustomButton title={'Publish'} backgroundColor={pinkColor} onPress={() => this.publishBlog()} />
         </View>
 
@@ -70,7 +115,7 @@ class PostBlog extends React.Component {
             fontWeight: 'bold', letterSpacing: 2, fontSize: 20
           }}
           onChangeText={(text) => this.setState({ blogTitle: text })}
-          />
+        />
         <Input
           value={blog}
           multiline={true}

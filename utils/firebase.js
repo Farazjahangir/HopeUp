@@ -83,8 +83,19 @@ firebaseFunctions.getDocumentByQuery = async (collection, find , operator , find
                     userIds.push(keysArr[i])
                 }
             }
+            // var set = new Set(userIds)
+            // var a = Array.from(set)
         })
         return userIds
+    }
+    catch(e){
+        return e.message
+    }
+}
+
+firebaseFunctions.deleteDoc = async (collection , docId) => {
+    try{
+        await db.collection(collection).doc(docId).delete()
     }
     catch(e){
         return e.message
