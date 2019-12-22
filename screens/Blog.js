@@ -63,7 +63,7 @@ class Blog extends React.Component {
     </TouchableOpacity>
 
   blog = (item, index) => {
-    return <TouchableOpacity onPress={() => this.props.navigation.navigate('BlogDetail')} style={{ width: '100%', paddingHorizontal: '2%', marginBottom: 25, }}>
+    return <TouchableOpacity onPress={() => this.props.navigation.navigate('BlogDetail' , { data: item })} style={{ width: '100%', paddingHorizontal: '2%', marginBottom: 25, }}>
       <View style={styles.title}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Image
