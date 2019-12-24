@@ -3,6 +3,7 @@ package com.transaction;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.firestore.RNFirebaseFirestorePackage;
@@ -21,6 +22,7 @@ import com.facebook.CallbackManager;
 import java.util.Arrays;
 import java.util.List;
 import io.invertase.firebase.auth.RNFirebaseAuthPackage;
+import com.reactnativecommunity.rnpermissions.RNPermissionsPackage;
 
 public class MainApplication extends Application implements ReactApplication {
    private static CallbackManager mCallbackManager = CallbackManager.Factory.create();
@@ -39,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+          new RNPermissionsPackage(),
           new FBSDKPackage(mCallbackManager),
           new RNFirebasePackage(),
           new RNFirebaseFirestorePackage(),

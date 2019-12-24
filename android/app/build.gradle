@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 
 import com.android.build.OutputFile
+// import androidx.annotation.Nullable;
 
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
@@ -150,6 +151,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-permissions')
     implementation project(':react-native-fbsdk')
     implementation project(':react-native-firebase')
     implementation project(':react-native-linear-gradient')
@@ -165,6 +167,7 @@ dependencies {
     implementation "com.google.firebase:firebase-core:16.0.9"
     implementation 'com.google.firebase:firebase-firestore:18.0.0'
     implementation "com.google.firebase:firebase-auth:17.0.0"
+    // implementation "androidx.annotation:annotation:1.1.0"
  }
 
 // Run this once to be able to run the application with BUCK

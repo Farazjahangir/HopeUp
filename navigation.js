@@ -199,7 +199,7 @@ const AppStack = createStackNavigator({
   },
   
   
-} , {initialRouteName : 'Feedback'})
+} , {initialRouteName : 'PostBlog'})
 
 const App = createSwitchNavigator({
   Auth: {
